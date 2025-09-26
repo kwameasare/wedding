@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-blush-50 text-slate-800 font-sans;
+}
+
+.font-playfair {
+  font-family: var(--font-playfair), "Playfair Display", serif;
+}
+
+a {
+  @apply text-blush-600 underline decoration-2 underline-offset-4;
+}
+
+a:hover {
+  @apply text-blush-700;
+}
+
+[data-theme='contrast'] body {
+  @apply bg-black text-white;
+}
+
+[data-theme='contrast'] a {
+  @apply text-yellow-300;
+}
+
+.skip-link {
+  @apply absolute left-1/2 -translate-x-1/2 -translate-y-full bg-white text-slate-900 p-3 rounded-b-lg shadow transition-transform duration-300 focus:translate-y-0 z-50;
+}
+
+.section-card {
+  @apply bg-white/70 backdrop-blur rounded-3xl shadow-xl border border-white/60 p-6 md:p-10 space-y-4;
+}
+
+.gradient-border {
+  position: relative;
+  border-radius: 1.5rem;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(249, 76, 128, 0.5), rgba(77, 146, 99, 0.5));
+  z-index: -1;
+}
+
+.glow {
+  box-shadow: 0 0 50px rgba(249, 76, 128, 0.35);
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(249, 76, 128, 0.3), rgba(77, 146, 99, 0.3));
+}
+
+.timeline-item {
+  width: calc(50% - 1.5rem);
+}
+
+.timeline-item:nth-child(odd) {
+  align-self: flex-start;
+}
+
+.timeline-item:nth-child(even) {
+  align-self: flex-end;
+}
+
+@media (max-width: 768px) {
+  .timeline::before {
+    left: 0.5rem;
+  }
+
+  .timeline-item {
+    width: 100%;
+    padding-left: 1.75rem;
+  }
+}

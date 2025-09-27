@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePersonalization } from "@/lib/personalization";
-import { Bars3Icon, XMarkIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Dialog } from "@headlessui/react";
 import { useState } from "react";
 
@@ -26,21 +26,23 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-white/60 shadow-sm">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2" aria-label="Go to personalized home">
-          <SparklesIcon className="h-7 w-7 text-blush-500" />
-          <div>
-            <p className="font-semibold text-slate-800">Harbor of Love</p>
-            <p className="text-xs text-slate-500">Welcome {guest.name.split(" ")[0]}!</p>
+    <header className="sticky top-0 z-40 border-b border-pearl-200/80 bg-pearl-50/90 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+        <Link href="/" className="flex items-center gap-4" aria-label="Go to personalized home">
+          <span className="font-playfair text-xl uppercase tracking-[0.6em] text-ink-900">S & D</span>
+          <div className="flex flex-col leading-tight">
+            <span className="font-semibold text-xs tracking-[0.38em] text-ink-500">Harbor of Love</span>
+            <span className="text-[0.7rem] uppercase tracking-[0.4em] text-ink-400">Welcome {guest.name.split(" ")[0]}</span>
           </div>
         </Link>
-        <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
+        <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`rounded-full px-4 py-2 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blush-400 ${pathname === link.href ? "bg-blush-500 text-white shadow" : "text-slate-700 hover:bg-white/70"}`}
+              className={`relative pb-1 text-[0.7rem] font-semibold uppercase tracking-[0.4em] transition ${
+                pathname === link.href ? "text-ink-900" : "text-ink-500 hover:text-ink-800"
+              }`}
             >
               {link.label}
             </Link>
@@ -48,14 +50,14 @@ export function Header() {
           <button
             type="button"
             onClick={toggleTheme}
-            className="rounded-full border border-slate-200 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-slate-600 hover:bg-slate-100"
+            className="rounded-full border border-pearl-200 px-5 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.4em] text-ink-500 transition hover:border-champagne-300 hover:text-ink-800"
           >
             {theme === "contrast" ? "Default View" : "High Contrast"}
           </button>
         </nav>
         <button
           type="button"
-          className="inline-flex items-center rounded-full border border-slate-200 p-2 text-slate-600 md:hidden"
+          className="inline-flex items-center rounded-full border border-pearl-200 p-2 text-ink-600 md:hidden"
           onClick={() => setOpen(true)}
           aria-label="Open navigation"
         >
@@ -64,12 +66,12 @@ export function Header() {
       </div>
       <Dialog open={open} onClose={setOpen} className="md:hidden">
         <div className="fixed inset-0 z-50 bg-black/30" aria-hidden="true" />
-        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-80 max-w-full bg-white p-6 shadow-2xl">
+        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-80 max-w-full bg-pearl-50 p-6 shadow-2xl">
           <div className="flex items-center justify-between">
-            <p className="font-semibold text-slate-800">Navigate</p>
+            <p className="font-semibold tracking-[0.4em] text-ink-600">Navigate</p>
             <button
               type="button"
-              className="rounded-full border border-slate-200 p-2 text-slate-600"
+              className="rounded-full border border-pearl-200 p-2 text-ink-600"
               onClick={() => setOpen(false)}
               aria-label="Close navigation"
             >
@@ -82,7 +84,9 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className={`rounded-2xl px-4 py-3 text-sm font-semibold transition ${pathname === link.href ? "bg-blush-500 text-white" : "bg-slate-100 text-slate-700"}`}
+                className={`rounded-2xl border border-pearl-200 px-4 py-3 text-xs font-semibold uppercase tracking-[0.3em] transition ${
+                  pathname === link.href ? "bg-champagne-100 text-ink-900" : "bg-white text-ink-500"
+                }`}
               >
                 {link.label}
               </Link>
@@ -90,7 +94,7 @@ export function Header() {
             <button
               type="button"
               onClick={toggleTheme}
-              className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700"
+              className="rounded-2xl border border-pearl-200 px-4 py-3 text-xs font-semibold uppercase tracking-[0.3em] text-ink-600"
             >
               {theme === "contrast" ? "Default View" : "High Contrast"}
             </button>

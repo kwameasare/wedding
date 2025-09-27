@@ -67,6 +67,18 @@ interface StoredData {
 
 const weddingDate = DateTime.fromISO("2025-06-21T15:30:00", { zone: "America/New_York" });
 
+function computeCountdown(timezone?: string) {
+  const now = DateTime.now().setZone(timezone ?? "America/New_York");
+  const diff = weddingDate.diff(now, ["days", "hours", "minutes", "seconds"]);
+
+  return {
+    days: Math.max(Math.floor(diff.days), 0),
+    hours: Math.max(Math.floor(diff.hours) % 24, 0),
+    minutes: Math.max(Math.floor(diff.minutes) % 60, 0),
+    seconds: Math.max(Math.floor(diff.seconds) % 60, 0)
+  };
+}
+
 function usePersistedState(): [StoredData, (data: StoredData) => void] {
   const [stored, setStored] = useState<StoredData>(() => {
     if (typeof window === "undefined") return { guestCode: defaultGuest.code };
@@ -172,15 +184,20 @@ export function PersonalizationProvider({
     });
   }, [guest.city]);
 
-  const countdown = useMemo(() => {
-    const now = DateTime.now().setZone(guest.timezone ?? "America/New_York");
-    const diff = weddingDate.diff(now, ["days", "hours", "minutes", "seconds"]);
-    return {
-      days: Math.max(Math.floor(diff.days), 0),
-      hours: Math.max(Math.floor(diff.hours) % 24, 0),
-      minutes: Math.max(Math.floor(diff.minutes) % 60, 0),
-      seconds: Math.max(Math.floor(diff.seconds) % 60, 0)
-    };
+  const [countdown, setCountdown] = useState(() => computeCountdown(guest.timezone));
+
+  useEffect(() => {
+    setCountdown(computeCountdown(guest.timezone));
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setCountdown(computeCountdown(guest.timezone));
+    }, 1000);
+
+    return () => window.clearInterval(interval);
   }, [guest.timezone]);
 
   const toggleTheme = useCallback(() => {

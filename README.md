@@ -1,33 +1,46 @@
 # Harbor of Love — Personalized Wedding Experience
 
-An immersive, personalized wedding hub built with Next.js and Tailwind CSS. Guests arrive via a magic link invite code to unlock bespoke greetings, RSVP flows, smart itineraries, travel helpers, interactive entertainment, and a digital guestbook. Admins get a sandbox dashboard previewing analytics, exports, and segmented communications.
+An immersive, personalized wedding hub built with Next.js, Tailwind CSS, and a Go + SQLite backend. Guests arrive via a magic link invite code to unlock bespoke greetings, RSVP flows, smart itineraries, travel helpers, interactive entertainment, and a digital guestbook. Admins use a production-ready dashboard to onboard guests, generate invitation URLs, and review evolving celebration insights.
 
 ## Getting started
 
-```bash
-npm install
-npm run dev
-```
+1. **Install frontend dependencies**
+   ```bash
+   npm install
+   ```
+2. **Start the Go backend** (runs on port 8080 by default)
+   ```bash
+   go run ./backend
+   ```
+   The service stores guest records in `wedding.db` (SQLite) alongside the repository. Adjust `DATABASE_URL` to point to a different file or use advanced SQLite connection strings.
+3. **Launch the Next.js app**
+   ```bash
+   npm run dev
+   ```
+4. Visit http://localhost:3000 and open the **Admin** tab to add guests. Each saved profile returns a personalized URL (`/?code=XXXXXX`) that you can share immediately.
 
-Open http://localhost:3000?code=AMY823 to explore a bridesmaid experience. Swap the code (`RAJ507`, `MIA242`, `JON110`, `LIV912`) to see tailored itineraries, arrival perks, and registry suggestions. Without a code, the site defaults to a visitor view.
+> **Tip:** To seed the database from the command line, POST to `http://localhost:8080/api/guests` with the guest payload shown in `components/AdminDashboard.tsx`.
 
 ## Highlights
 
 - **Personalization engine** persisting guest identity, RSVPs, music requests, and guestbook notes with high-contrast accessibility toggle.
+- **Production-ready guest directory** backed by SQLite with REST APIs for fetching and creating guest profiles.
+- **Admin dashboard** generates invitation links, captures dietary/accessibility intel, and visualizes guest insights in real time.
 - **RSVP workflow** captures attendance per event, dietary details, plus-one info, and communications consent in under two minutes.
 - **Smart itinerary** filters relevant events, surfaces accessibility notes, and calculates “leave by” reminders per guest.
 - **Arrival, registry, and entertainment modules** adapt content for each guest’s role, budget hints, and interests.
 - **Engagement layer** featuring trivia game, song requests with dedications, and an interactive digital guestbook.
-- **Admin sandbox** summarizing RSVP stats, dietary flags, mock exports, and segmented messaging previews.
 - **Accessibility features** including skip links, high-contrast mode, semantic content structure, and focus-visible styling.
 
 ## Project structure
 
 - `app/` — Next.js App Router pages for each experience surface (home, RSVP, itinerary, admin, etc.).
 - `components/` — Reusable UI and interactive client components.
-- `lib/data/` — Mock personalization datasets for guests, events, gifts, travel, and story moments.
-- `lib/personalization.ts` — Client-side personalization context handling persistence and tailored content helpers.
+- `backend/` — Go service exposing guest CRUD endpoints with SQLite persistence.
+- `lib/data/` — Canonical datasets for events, gifts, travel, and story moments.
+- `lib/models/` — Shared TypeScript models for guests and normalization helpers.
+- `lib/personalization.tsx` — Client-side personalization context handling persistence and tailored content helpers.
 
 ## Extending
 
-Hook the personalization context into real APIs for RSVPs, seating charts, or Twilio/SendGrid communications. Integrate storage for photo uploads and real-time dashboards to graduate from demo to production.
+Hook the personalization context into additional backend endpoints for RSVPs, seating charts, or vendor communications. Integrate storage for photo uploads and real-time dashboards to graduate from demo to production.

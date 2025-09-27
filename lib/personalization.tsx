@@ -1,8 +1,8 @@
 "use client";
 
 import { DateTime } from "luxon";
-import { createContext, useContext, useMemo, useState, useEffect, useCallback } from "react";
-import { defaultGuest, guestDirectory, type GuestProfile } from "./data/guests";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { defaultGuest, normalizeGuestProfile, type GuestProfile } from "./models/guest";
 import { events, type EventDetail } from "./data/events";
 import { giftRegistry, type GiftItem } from "./data/gifts";
 import { travelOptions, type TravelOption } from "./data/travel";
@@ -114,6 +114,8 @@ export function PersonalizationProvider({
   const [guestCode, setGuestCodeState] = useState<string>(
     initialCode ?? stored.guestCode ?? defaultGuest.code
   );
+  const [guest, setGuest] = useState<GuestProfile>(defaultGuest);
+  const backendBase = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8080";
 
   useEffect(() => {
     if (initialCode && initialCode !== stored.guestCode) {
@@ -123,20 +125,56 @@ export function PersonalizationProvider({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialCode]);
 
-  const guest = useMemo(() => {
-    return guestDirectory[guestCode?.toUpperCase() ?? ""] ?? defaultGuest;
-  }, [guestCode]);
+  useEffect(() => {
+    let cancelled = false;
+    const normalizedCode = guestCode?.toUpperCase() || defaultGuest.code;
+
+    if (!normalizedCode || normalizedCode === defaultGuest.code) {
+      setGuest(defaultGuest);
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    const fetchGuest = async () => {
+      try {
+        const response = await fetch(`${backendBase}/api/guests/${encodeURIComponent(normalizedCode)}`);
+        if (!response.ok) {
+          throw new Error(`Failed to load guest: ${response.status}`);
+        }
+        const data = (await response.json()) as Partial<GuestProfile>;
+        if (!cancelled) {
+          setGuest(normalizeGuestProfile(data));
+        }
+      } catch (error) {
+        console.error(error);
+        if (!cancelled) {
+          setGuest(defaultGuest);
+        }
+      }
+    };
+
+    fetchGuest();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [backendBase, guestCode]);
 
   const rsvp = stored.rsvp ?? null;
   const musicRequests = useMemo(() => stored.musicRequests ?? [], [stored.musicRequests]);
   const guestbookEntries = useMemo(() => stored.guestbook ?? [], [stored.guestbook]);
   const theme = stored.theme ?? "default";
 
-  const setGuestCode = useCallback((code: string | null) => {
-    const normalized = code?.toUpperCase() ?? defaultGuest.code;
-    setGuestCodeState(normalized);
-    setStored({ ...stored, guestCode: normalized });
-  }, [setStored, stored]);
+  const setGuestCode = useCallback(
+    (code: string | null) => {
+      const normalized = code?.toUpperCase() ?? defaultGuest.code;
+      setGuest(defaultGuest);
+      setGuestCodeState(normalized);
+      setStored({ ...stored, guestCode: normalized });
+    },
+    [setStored, stored, setGuest]
+  );
 
   const saveRSVP = useCallback(
     (record: RSVPRecord) => {

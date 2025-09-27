@@ -7,19 +7,44 @@
 }
 
 body {
-  @apply bg-blush-50 text-slate-800 font-sans;
+  background-color: theme("colors.pearl.50");
+  color: theme("colors.ink.800");
+  font-family: var(--font-body), "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0.01em;
 }
 
 .font-playfair {
-  font-family: var(--font-playfair), "Playfair Display", serif;
+  font-family: var(--font-display), "Cormorant Garamond", "Times New Roman", serif;
+  letter-spacing: 0.08em;
 }
 
 a {
-  @apply text-blush-600 underline decoration-2 underline-offset-4;
+  position: relative;
+  color: theme("colors.ink.700");
+  text-decoration: none;
+  font-weight: 500;
 }
 
 a:hover {
-  @apply text-blush-700;
+  color: theme("colors.ink.900");
+}
+
+a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.35rem;
+  width: 100%;
+  height: 1px;
+  background: theme("colors.champagne.400");
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms ease;
+}
+
+a:hover::after,
+a:focus-visible::after {
+  transform: scaleX(1);
 }
 
 [data-theme='contrast'] body {
@@ -31,11 +56,11 @@ a:hover {
 }
 
 .skip-link {
-  @apply absolute left-1/2 -translate-x-1/2 -translate-y-full bg-white text-slate-900 p-3 rounded-b-lg shadow transition-transform duration-300 focus:translate-y-0 z-50;
+  @apply absolute left-1/2 -translate-x-1/2 -translate-y-full bg-white text-ink-800 p-3 rounded-b-lg shadow transition-transform duration-300 focus:translate-y-0 z-50;
 }
 
 .section-card {
-  @apply bg-white/70 backdrop-blur rounded-3xl shadow-xl border border-white/60 p-6 md:p-10 space-y-4;
+  @apply bg-white/80 backdrop-blur rounded-[2.5rem] border border-pearl-200 p-8 md:p-12 space-y-6 shadow-[0_20px_60px_rgba(24,22,20,0.05)];
 }
 
 .gradient-border {
@@ -48,7 +73,7 @@ a:hover {
   position: absolute;
   inset: -2px;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(249, 76, 128, 0.5), rgba(77, 146, 99, 0.5));
+  background: linear-gradient(135deg, rgba(186, 153, 104, 0.35), rgba(87, 72, 54, 0.2));
   z-index: -1;
 }
 
@@ -59,32 +84,14 @@ a:hover {
 .timeline::before {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 2px;
-  background: linear-gradient(180deg, rgba(249, 76, 128, 0.3), rgba(77, 146, 99, 0.3));
+  inset: 0;
+  background: linear-gradient(180deg, rgba(186, 153, 104, 0.12), rgba(24, 22, 20, 0));
+  border-radius: 9999px;
 }
 
 .timeline-item {
-  width: calc(50% - 1.5rem);
-}
-
-.timeline-item:nth-child(odd) {
-  align-self: flex-start;
-}
-
-.timeline-item:nth-child(even) {
-  align-self: flex-end;
-}
-
-@media (max-width: 768px) {
-  .timeline::before {
-    left: 0.5rem;
-  }
-
-  .timeline-item {
-    width: 100%;
-    padding-left: 1.75rem;
-  }
+  border-radius: 2rem;
+  border: 1px solid rgba(186, 153, 104, 0.2);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 18px 45px rgba(24, 22, 20, 0.08);
 }
